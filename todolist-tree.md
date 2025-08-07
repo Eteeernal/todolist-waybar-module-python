@@ -1,7 +1,0 @@
-- [ ] etapa 1
-    - [ ] proceso 1
-        - [ ] accion 1
-        - [ ] accion 2
-- [ ] etapa 2
-    - [ ] accion 2
-- [ ] accion 3

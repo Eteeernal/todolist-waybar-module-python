@@ -1,6 +1,7 @@
-# Lista de tareas
-
-- [x] Terminar informe
-- [ ] Leer documentación API
-- [x] Preparar reunión
-- [x] Enviar correo
+- [xg] etapa 1
+- [x] proceso 1
+- [ ] accion 1
+    - [ ] accion 2
+    - [ ] etapa 2
+- [x] accion 2
+    - [x] accion 3
