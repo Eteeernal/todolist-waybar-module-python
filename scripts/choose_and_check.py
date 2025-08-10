@@ -77,24 +77,24 @@ def parsear_tareas(lineas):
     return nodos
 
 def listar_tareas_pendientes(nodos):
-    """Obtener lista de todas las tareas pendientes con formato jerárquico"""
+    """Obtener lista de todas las tareas pendientes con formato jerárquico usando tabs por nivel"""
     tareas = []
-    
-    def agregar_tareas(nodo, prefijo=""):
+
+    def agregar_tareas(nodo):
         if not nodo.checked:
-            # Mostrar tarea con indentación visual
-            indicador = "🔲" if not nodo.hijos else "📁"
-            tareas.append(f"{prefijo}{indicador} {nodo.texto}")
-        
+            # Indentación por nivel usando tabs, similar al tooltip (1 tab por nivel)
+            indent = "  " * nodo.nivel
+            indicador = ""
+            tareas.append(f"{indent}{indicador} {nodo.texto}")
+
         # Agregar hijos (aunque el padre esté marcado, los hijos pueden estar desmarcados)
         for hijo in nodo.hijos:
-            nuevo_prefijo = prefijo + "  " if prefijo else ""
-            agregar_tareas(hijo, nuevo_prefijo)
-    
+            agregar_tareas(hijo)
+
     for nodo in nodos:
         if nodo.padre is None:  # raíz
             agregar_tareas(nodo)
-    
+
     return tareas
 
 def buscar_archivos_markdown():
@@ -172,9 +172,8 @@ def mostrar_menu_seleccion_archivo():
     """Mostrar menú con diferentes opciones para seleccionar archivo"""
     opciones = [
         "🔍 Buscar en archivos encontrados",
-        "📝 Escribir ruta manualmente", 
-        "📁 Abrir administrador de archivos",
-        "⏰ Archivos recientes"
+        "⏰ Archivos recientes",
+        "📝 Escribir ruta manualmente"
     ]
     
     entrada = "\n".join(opciones)
@@ -316,30 +315,6 @@ def cambiar_archivo():
                 nuevo_archivo = Path(ruta)
         except:
             pass
-            
-    elif opcion == "📁 Abrir administrador de archivos":
-        try:
-            # Intentar abrir administrador de archivos gráfico
-            administradores = ["nautilus", "dolphin", "thunar", "nemo", "pcmanfm"]
-            for admin in administradores:
-                try:
-                    subprocess.run([admin, str(Path.home())], check=True)
-                    subprocess.run([
-                        "notify-send", 
-                        "Administrador de Archivos", 
-                        "💡 Selecciona un archivo .md y vuelve a este menú para escribir la ruta"
-                    ])
-                    return False  # No cambiar archivo, solo abrir explorador
-                except:
-                    continue
-            
-            subprocess.run([
-                "notify-send", 
-                "Error", 
-                "No se encontró administrador de archivos gráfico"
-            ])
-        except:
-            pass
         return False
     
     # Validar y aplicar el archivo seleccionado
@@ -414,7 +389,7 @@ def mostrar_rofi(opciones):
     # Agregar opciones del sistema al menú
     opciones_sistema = [
         "📁 Cambiar archivo markdown...",
-        "📄 Ver archivo actual...",
+        "📄 Editar archivo actual...",
         "─" * 30  # Separador visual
     ]
     
@@ -450,8 +425,8 @@ def mostrar_rofi(opciones):
             # Manejar opciones del sistema
             if seleccion == "📁 Cambiar archivo markdown...":
                 return "CAMBIAR_ARCHIVO"
-            elif seleccion == "📄 Ver archivo actual...":
-                return "VER_ARCHIVO"
+            elif seleccion == "📄 Editar archivo actual...":
+                return "EDITAR_ARCHIVO"
             elif seleccion.startswith("─"):
                 return None  # Separador seleccionado, ignorar
             else:
@@ -474,33 +449,13 @@ def mostrar_rofi(opciones):
     
     return None
 
-def ver_archivo_actual():
-    """Mostrar información del archivo markdown actual"""
+def editar_archivo_actual():
+    """Editar archivo actual en VSCode"""
     archivo_actual = get_current_file()
     try:
-        stat_info = archivo_actual.stat()
-        tamaño = stat_info.st_size
-        
-        # Contar líneas y tareas
-        with open(archivo_actual, "r", encoding="utf-8") as f:
-            lineas = f.readlines()
-        
-        nodos = parsear_tareas(lineas)
-        total_tareas = len(nodos)
-        tareas_completas = sum(1 for nodo in nodos if nodo.checked)
-        tareas_pendientes = total_tareas - tareas_completas
-        
-        info = f"""📄 {archivo_actual.name}
-📁 {archivo_actual.parent}
-📊 {tamaño} bytes
-📝 {len(lineas)} líneas
-✅ {tareas_completas} completadas
-⏳ {tareas_pendientes} pendientes"""
-        
         subprocess.run([
-            "notify-send", 
-            "Archivo Actual", 
-            info
+            "code", 
+            archivo_actual
         ])
     except Exception as e:
         subprocess.run([
@@ -540,8 +495,8 @@ def main():
                 continue
             else:
                 break
-        elif seleccion == "VER_ARCHIVO":
-            ver_archivo_actual()
+        elif seleccion == "EDITAR_ARCHIVO":
+            editar_archivo_actual()
             continue
         else:
             # Es una tarea normal, marcarla

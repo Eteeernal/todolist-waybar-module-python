@@ -1,0 +1,21 @@
+- [x] Crear markdown
+- [x] Actualizar layout waybar theme
+    - [x] Quitar archivo actua al centro
+    - [x] Mover todolist al centro
+    - [x] workspaces a la izquierda
+    - [x] hora al centro
+    - [x] wifi status default izquierda
+    - [x] wifi status default clicked
+- [ ] Todolist
+    - [ ] Cambiar ver archivo actual por editar archivo actual
+    - [ ] Editar archivo actual abre vs code
+- [x] Fondos de pantalla
+    - [x] Buscar fondos de pantalla tokyo nigth like
+    - [x] Agregar wallpapers a tema hyde
+    - [x] Cambiarlos aleatoriamente
+
+- [ ] Configurar letra y tamano de letra de sddm
+- [ ] Entrada de texto en tema de rofi
+- [ ] Configurar comportamiento de la tapa
+- [ ] Corregir suspension
+- [ ] Script de sincronizacionP
